@@ -1,0 +1,97 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Mi Perfil</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="save()" [disabled]="form.invalid">
+        <ion-icon slot="icon-only" name="checkmark-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [formGroup]="form">
+  <ion-grid fixed>
+
+    <!-- Banner informativo -->
+    <ion-row>
+      <ion-col>
+        <div class="info-banner">
+          <ion-icon name="information-circle-outline"></ion-icon>
+          <p>Estos datos se usarán automáticamente como <strong>emisor</strong> en cada nueva factura que crees.</p>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <!-- Formulario -->
+    <ion-row>
+      <ion-col size="12" size-md="8" offset-md="2">
+
+        <ion-list-header>
+          <ion-label>Datos de tu empresa</ion-label>
+        </ion-list-header>
+
+        <ion-item>
+          <ion-input
+            label="Nombre / Empresa"
+            label-placement="stacked"
+            formControlName="companyName"
+            placeholder="Ej. Mi Empresa S.A.">
+          </ion-input>
+        </ion-item>
+        <ion-note color="danger" class="field-error"
+          *ngIf="form.get('companyName')!.invalid && form.get('companyName')!.touched">
+          El nombre es requerido
+        </ion-note>
+
+        <ion-item>
+          <ion-input
+            label="Email"
+            label-placement="stacked"
+            type="email"
+            formControlName="email"
+            placeholder="contacto@tuempresa.com">
+          </ion-input>
+        </ion-item>
+        <ion-note color="danger" class="field-error"
+          *ngIf="form.get('email')!.invalid && form.get('email')!.touched">
+          Ingresa un email válido
+        </ion-note>
+
+        <ion-item>
+          <ion-input
+            label="Teléfono"
+            label-placement="stacked"
+            type="tel"
+            formControlName="phone"
+            placeholder="+52 55 1234 5678">
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-textarea
+            label="Dirección"
+            label-placement="stacked"
+            formControlName="address"
+            [rows]="3"
+            auto-grow="true"
+            placeholder="Calle, número, ciudad, estado, CP">
+          </ion-textarea>
+        </ion-item>
+
+        <ion-button
+          expand="block"
+          color="primary"
+          class="ion-margin-top ion-margin-horizontal"
+          (click)="save()">
+          <ion-icon slot="start" name="save-outline"></ion-icon>
+          Guardar perfil
+        </ion-button>
+
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+</ion-content>

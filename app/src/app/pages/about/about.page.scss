@@ -1,0 +1,129 @@
+.dev-card {
+  margin: 24px auto 16px;
+  max-width: 480px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+
+  ion-card-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 28px;
+  }
+
+  ion-card-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-top: 12px;
+  }
+
+  ion-card-subtitle {
+    text-align: center;
+    margin-top: 4px;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    text-transform: lowercase;
+  }
+
+  ion-card-content {
+    text-align: center;
+    padding-bottom: 24px;
+  }
+}
+
+.dev-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--ion-color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ion-icon {
+    font-size: 2rem;
+    color: white;
+  }
+}
+
+.developer-label {
+  color: var(--ion-color-medium);
+  font-size: 0.8rem;
+  margin-bottom: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.developer-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--ion-text-color);
+  margin-top: 0;
+}
+
+.contact-list {
+  max-width: 480px;
+  margin: 0 auto;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* El link ocupa todo el ion-item */
+.contact-link {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  text-decoration: none;
+  color: inherit;
+  padding: 10px 0;
+  gap: 12px;
+
+  ion-icon[slot="start"] {
+    font-size: 1.25rem;
+    color: var(--ion-color-primary);
+    flex-shrink: 0;
+    margin-inline-start: 16px;
+  }
+
+  ion-label {
+    flex: 1;
+  }
+}
+
+.contact-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin: 0 0 2px;
+  color: var(--ion-text-color);
+}
+
+.contact-value {
+  font-size: 0.8rem;
+  color: var(--ion-color-medium);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.external-icon {
+  font-size: 0.9rem;
+  color: var(--ion-color-medium);
+  margin-inline-end: 16px;
+}
+
+.linkedin-icon {
+  color: #0077B5 !important;
+}
+
+.copyright {
+  text-align: center;
+  color: var(--ion-color-medium);
+  font-size: 0.78rem;
+  padding: 20px 16px 32px;
+  line-height: 1.6;
+  max-width: 480px;
+  margin: 0 auto;
+}

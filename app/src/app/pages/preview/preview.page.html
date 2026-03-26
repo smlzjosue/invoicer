@@ -1,0 +1,116 @@
+<ion-header class="no-print">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Vista Previa</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="editInvoice()">
+        <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="print()">
+        <ion-icon slot="icon-only" name="print-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="invoice$ | async as inv">
+    <div class="invoice-wrapper">
+      <div class="invoice-document">
+
+        <!-- Encabezado -->
+        <div class="invoice-header">
+          <div>
+            <h1 class="invoice-title">FACTURA</h1>
+            <p class="invoice-number">{{ inv.invoiceNumber }}</p>
+          </div>
+          <div class="invoice-meta">
+            <div class="meta-row">
+              <span class="meta-label">Fecha de emisión</span>
+              <span>{{ inv.issueDate }}</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">Fecha de vencimiento</span>
+              <span>{{ inv.dueDate }}</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">Estado</span>
+              <span class="status-badge" [attr.data-status]="inv.status">
+                {{ inv.status === 'paid' ? 'Pagada' : inv.status === 'pending' ? 'Pendiente' : 'Borrador' }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- De / Para -->
+        <div class="parties">
+          <div class="party">
+            <h3>De</h3>
+            <p class="party-name">{{ inv.from.name }}</p>
+            <p *ngIf="inv.from.email">{{ inv.from.email }}</p>
+            <p *ngIf="inv.from.phone">{{ inv.from.phone }}</p>
+            <p *ngIf="inv.from.address" class="address">{{ inv.from.address }}</p>
+          </div>
+          <div class="party">
+            <h3>Cobrar a</h3>
+            <p class="party-name">{{ inv.to.name }}</p>
+            <p *ngIf="inv.to.email">{{ inv.to.email }}</p>
+            <p *ngIf="inv.to.phone">{{ inv.to.phone }}</p>
+            <p *ngIf="inv.to.address" class="address">{{ inv.to.address }}</p>
+          </div>
+        </div>
+
+        <!-- Tabla de items -->
+        <div class="items-table-wrapper">
+        <table class="items-table">
+          <thead>
+            <tr>
+              <th class="col-desc">Descripción</th>
+              <th class="col-num">Cant.</th>
+              <th class="col-num">Precio</th>
+              <th class="col-num">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of inv.items">
+              <td>{{ item.description }}</td>
+              <td class="text-right">{{ item.quantity }}</td>
+              <td class="text-right">${{ item.rate | number: '1.2-2' }}</td>
+              <td class="text-right">${{ item.amount | number: '1.2-2' }}</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+
+        <!-- Totales -->
+        <div class="totals-section">
+          <div class="totals-rows">
+            <div class="total-row">
+              <span>Subtotal</span>
+              <span>${{ inv.subtotal | number: '1.2-2' }}</span>
+            </div>
+            <div class="total-row" *ngIf="inv.taxRate > 0">
+              <span>Impuesto ({{ inv.taxRate }}%)</span>
+              <span>${{ inv.taxAmount | number: '1.2-2' }}</span>
+            </div>
+            <div class="total-row grand-total">
+              <strong>Total</strong>
+              <strong>${{ inv.total | number: '1.2-2' }}</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notas -->
+        <div class="notes" *ngIf="inv.notes">
+          <h4>Notas</h4>
+          <p>{{ inv.notes }}</p>
+        </div>
+
+      </div>
+    </div>
+  </ng-container>
+</ion-content>

@@ -1,0 +1,125 @@
+// For information on how to create your own theme, please refer to:
+// https://ionicframework.com/docs/theming/
+
+/**
+ * Custom Color Palette
+ * -----------------------------------------------------
+ * ColorHunt palette: colorhunt.co/palette/2f6b3f7fb77ef7c85cfff6c0
+ * - #2F6B3F (Deep Green)   - Primary
+ * - #7FB77E (Medium Green) - Secondary
+ * - #F7C85C (Golden)       - Tertiary / Warning
+ * - #FFF6C0 (Cream)        - Success / Accent
+ */
+
+:root {
+  /** Primary - Deep Green **/
+  --ion-color-primary: #2F6B3F;
+  --ion-color-primary-rgb: 47, 107, 63;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #295e37;
+  --ion-color-primary-tint: #447a52;
+
+  /** Secondary - Medium Green **/
+  --ion-color-secondary: #7FB77E;
+  --ion-color-secondary-rgb: 127, 183, 126;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #6fa16e;
+  --ion-color-secondary-tint: #8cbe8b;
+
+  /** Tertiary - Golden Yellow **/
+  --ion-color-tertiary: #F7C85C;
+  --ion-color-tertiary-rgb: 247, 200, 92;
+  --ion-color-tertiary-contrast: #000000;
+  --ion-color-tertiary-contrast-rgb: 0, 0, 0;
+  --ion-color-tertiary-shade: #d9b051;
+  --ion-color-tertiary-tint: #f8ce6c;
+
+  /** Success - Cream **/
+  --ion-color-success: #7FB77E;
+  --ion-color-success-rgb: 127, 183, 126;
+  --ion-color-success-contrast: #ffffff;
+  --ion-color-success-contrast-rgb: 255, 255, 255;
+  --ion-color-success-shade: #6fa16e;
+  --ion-color-success-tint: #8cbe8b;
+
+  /** Warning - Golden Yellow **/
+  --ion-color-warning: #F7C85C;
+  --ion-color-warning-rgb: 247, 200, 92;
+  --ion-color-warning-contrast: #000000;
+  --ion-color-warning-contrast-rgb: 0, 0, 0;
+  --ion-color-warning-shade: #d9b051;
+  --ion-color-warning-tint: #f8ce6c;
+
+  /** Danger **/
+  --ion-color-danger: #eb445a;
+  --ion-color-danger-rgb: 235, 68, 90;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #cf3c4f;
+  --ion-color-danger-tint: #ed576b;
+
+  /** Dark **/
+  --ion-color-dark: #222428;
+  --ion-color-dark-rgb: 34, 36, 40;
+  --ion-color-dark-contrast: #ffffff;
+  --ion-color-dark-contrast-rgb: 255, 255, 255;
+  --ion-color-dark-shade: #1e2023;
+  --ion-color-dark-tint: #383a3e;
+
+  /** Medium **/
+  --ion-color-medium: #92949c;
+  --ion-color-medium-rgb: 146, 148, 156;
+  --ion-color-medium-contrast: #ffffff;
+  --ion-color-medium-contrast-rgb: 255, 255, 255;
+  --ion-color-medium-shade: #808289;
+  --ion-color-medium-tint: #9d9fa6;
+
+  /** Light **/
+  --ion-color-light: #f4f5f8;
+  --ion-color-light-rgb: 244, 245, 248;
+  --ion-color-light-contrast: #000000;
+  --ion-color-light-contrast-rgb: 0, 0, 0;
+  --ion-color-light-shade: #d7d8da;
+  --ion-color-light-tint: #f5f6f9;
+
+  /** ── Premium Design Tokens ─────────────────────────────────────────────── **/
+
+  /* Typography */
+  --ff-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* Semantic text colors */
+  --ff-text-primary:   #0f172a;
+  --ff-text-secondary: #64748b;
+  --ff-text-muted:     #94a3b8;
+
+  /* Surface & border */
+  --ff-surface:        #ffffff;
+  --ff-bg:             #f8fafc;
+  --ff-border:         #e2e8f0;
+  --ff-border-subtle:  rgba(0, 0, 0, 0.06);
+
+  /* Shadows (Tailwind-like) */
+  --ff-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --ff-shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.08);
+  --ff-shadow:    0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.08);
+  --ff-shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.06);
+  --ff-shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.08), 0 8px 10px -6px rgb(0 0 0 / 0.04);
+
+  /* Border radii */
+  --ff-radius-xs: 4px;
+  --ff-radius-sm: 6px;
+  --ff-radius:    8px;
+  --ff-radius-md: 12px;
+  --ff-radius-lg: 16px;
+  --ff-radius-xl: 20px;
+
+  /* Status badge colors (pastel) */
+  --ff-badge-paid-bg:     #dcfce7;
+  --ff-badge-paid-color:  #15803d;
+  --ff-badge-pending-bg:  #fef9c3;
+  --ff-badge-pending-color: #a16207;
+  --ff-badge-draft-bg:    #f1f5f9;
+  --ff-badge-draft-color: #475569;
+}

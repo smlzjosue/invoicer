@@ -1,0 +1,27 @@
+# Firebase
+.firebase/
+firebase-debug.log
+firestore-debug.log
+
+# Functions env files (contienen secretos)
+functions/.env.dev
+functions/.env.qa
+functions/.env.prod
+
+# Service account keys (nunca subir al repo)
+functions/service-account*.json
+
+# Node
+node_modules/
+functions/node_modules/
+functions/lib/
+
+# Angular
+app/www/
+app/.angular/
+app/node_modules/
+
+# OS — macOS metadata/resource fork files
+.DS_Store
+._*
+__MACOSX/

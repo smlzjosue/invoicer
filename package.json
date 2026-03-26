@@ -1,0 +1,13 @@
+{
+  "name": "invoicer-2-workspace",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently --names \"EMU,FN,APP\" --prefix-colors \"cyan,yellow,green\" \"npm run emulate --prefix functions\" \"npm run build:watch --prefix functions\" \"npm run start --prefix app\"",
+    "emulate": "npm run emulate --prefix functions",
+    "build:functions": "npm run build --prefix functions",
+    "start:app": "npm run start --prefix app"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

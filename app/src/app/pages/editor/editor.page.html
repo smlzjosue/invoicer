@@ -1,0 +1,253 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ isNew ? 'Nueva Factura' : 'Editar Factura' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="save()" [disabled]="form.invalid">
+        <ion-icon slot="icon-only" name="checkmark-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [formGroup]="form">
+  <ion-grid fixed>
+
+    <!-- Número, fecha y estado -->
+    <ion-row>
+      <ion-col size="12" size-md="4">
+        <ion-item>
+          <ion-input label="Número de factura" label-placement="stacked" formControlName="invoiceNumber"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="12" size-md="4">
+        <ion-item>
+          <ion-input label="Fecha de emisión" label-placement="stacked" type="date" formControlName="issueDate"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="12" size-md="4">
+        <ion-item button detail="false" (click)="openDueDateModal()">
+          <ion-label position="stacked">Fecha de vencimiento</ion-label>
+          <ion-text [class.placeholder]="!form.get('dueDate')!.value">
+            {{ dueDateDisplay }}
+          </ion-text>
+          <ion-icon slot="end" name="calendar-outline"></ion-icon>
+        </ion-item>
+        <ion-note color="danger" *ngIf="form.get('dueDate')!.invalid && form.get('dueDate')!.touched">
+          Selecciona una fecha de vencimiento
+        </ion-note>
+      </ion-col>
+    </ion-row>
+
+    <!-- Modal: Fecha de vencimiento -->
+    <ion-modal
+      [isOpen]="dueDateModalOpen"
+      (didDismiss)="cancelDueDate()"
+      cssClass="date-picker-dialog">
+      <ng-template>
+        <ion-datetime
+          presentation="date"
+          [min]="minDueDate"
+          [value]="tempDueDate"
+          (ionChange)="onDatetimeChange($event)"
+          locale="es-MX"
+          [showDefaultButtons]="false">
+          <ion-buttons slot="buttons">
+            <ion-button fill="clear" (click)="cancelDueDate()">Cancelar</ion-button>
+            <ion-button fill="clear" (click)="setDueDateToday()">Hoy</ion-button>
+            <ion-button fill="solid" color="primary" (click)="confirmDueDate()">Confirmar</ion-button>
+          </ion-buttons>
+        </ion-datetime>
+      </ng-template>
+    </ion-modal>
+
+    <!-- De / Para -->
+    <ion-row>
+      <ion-col size="12" size-lg="6">
+        <ion-list-header>
+          <ion-label>De</ion-label>
+        </ion-list-header>
+        <div formGroupName="from">
+          <ion-item>
+            <ion-input label="Nombre / Empresa" label-placement="stacked" formControlName="name"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-input label="Email" label-placement="stacked" type="email" formControlName="email"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-input label="Teléfono" label-placement="stacked" type="tel" formControlName="phone"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-textarea label="Dirección" label-placement="stacked" formControlName="address" [rows]="2" auto-grow="true"></ion-textarea>
+          </ion-item>
+        </div>
+      </ion-col>
+
+      <ion-col size="12" size-lg="6">
+        <ion-list-header>
+          <ion-label>Cobrar a</ion-label>
+        </ion-list-header>
+        <div formGroupName="to">
+          <ion-item>
+            <ion-input label="Nombre / Empresa" label-placement="stacked" formControlName="name"></ion-input>
+            <ion-button slot="end" fill="clear" size="small" (click)="openClientSelector()">
+              <ion-icon slot="start" name="people-outline"></ion-icon>
+              Seleccionar
+            </ion-button>
+          </ion-item>
+          <ion-item>
+            <ion-input label="Email" label-placement="stacked" type="email" formControlName="email"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-input label="Teléfono" label-placement="stacked" type="tel" formControlName="phone"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-textarea label="Dirección" label-placement="stacked" formControlName="address" [rows]="2" auto-grow="true"></ion-textarea>
+          </ion-item>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <!-- Líneas de detalle -->
+    <ion-list-header>
+      <ion-label>Servicios / Productos</ion-label>
+    </ion-list-header>
+
+    <div formArrayName="items">
+      <ion-card *ngFor="let item of items.controls; let i = index" [formGroupName]="i">
+        <ion-card-content>
+          <ion-row>
+            <ion-col size="12" size-md="6">
+              <ion-item>
+                <ion-textarea label="Descripción" label-placement="stacked" formControlName="description" auto-grow="true"></ion-textarea>
+              </ion-item>
+            </ion-col>
+            <ion-col size="4" size-md="2">
+              <ion-item>
+                <ion-input label="Cantidad" label-placement="stacked" type="number" formControlName="quantity"></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size="4" size-md="2">
+              <ion-item>
+                <ion-input label="Precio" label-placement="stacked" type="number" formControlName="rate"></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size="4" size-md="2">
+              <ion-item>
+                <ion-input label="Total" label-placement="stacked" formControlName="amount" readonly></ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+          <ion-button fill="clear" color="danger" size="small" (click)="removeItem(i)" *ngIf="items.length > 1">
+            <ion-icon slot="start" name="trash-outline"></ion-icon>
+            Eliminar
+          </ion-button>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <ion-button expand="block" fill="outline" (click)="addItem()" class="ion-margin">
+      <ion-icon slot="start" name="add-outline"></ion-icon>
+      Agregar línea
+    </ion-button>
+
+    <!-- Totales -->
+    <ion-row class="ion-justify-content-end">
+      <ion-col size="12" size-md="4">
+        <ion-item>
+          <ion-input label="Impuesto (%)" label-placement="stacked" type="number" formControlName="taxRate"></ion-input>
+        </ion-item>
+        <div class="totals-box">
+          <div class="totals-row">
+            <span>Subtotal</span>
+            <span>${{ totals.subtotal | number: '1.2-2' }}</span>
+          </div>
+          <div class="totals-row" *ngIf="form.get('taxRate')!.value > 0">
+            <span>Impuesto ({{ form.get('taxRate')!.value }}%)</span>
+            <span>${{ totals.taxAmount | number: '1.2-2' }}</span>
+          </div>
+          <div class="totals-row total">
+            <strong>Total</strong>
+            <strong>${{ totals.total | number: '1.2-2' }}</strong>
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <!-- Notas -->
+    <ion-accordion-group>
+      <ion-accordion value="notes">
+        <ion-item slot="header">
+          <ion-label>Notas adicionales</ion-label>
+        </ion-item>
+        <div slot="content">
+          <ion-item>
+            <ion-textarea formControlName="notes" [rows]="3" auto-grow="true" placeholder="Términos, instrucciones de pago..."></ion-textarea>
+          </ion-item>
+        </div>
+      </ion-accordion>
+    </ion-accordion-group>
+
+    <!-- Estado -->
+    <ion-item class="ion-margin-top">
+      <ion-select label="Estado" label-placement="stacked" formControlName="status">
+        <ion-select-option value="draft">Borrador</ion-select-option>
+        <ion-select-option value="pending">Pendiente</ion-select-option>
+        <ion-select-option value="paid">Pagada</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-button expand="block" color="primary" (click)="save()" class="ion-margin">
+      <ion-icon slot="start" name="save-outline"></ion-icon>
+      Guardar factura
+    </ion-button>
+
+  </ion-grid>
+
+  <!-- Modal: Selector de cliente -->
+  <ion-modal
+    [isOpen]="clientSelectorOpen"
+    (didDismiss)="closeClientSelector()"
+    [initialBreakpoint]="0.75"
+    [breakpoints]="[0, 0.75, 1]">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Seleccionar cliente</ion-title>
+          <ion-buttons slot="end">
+            <ion-button fill="clear" (click)="closeClientSelector()">Cerrar</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <ion-searchbar
+          [(ngModel)]="clientSearch"
+          placeholder="Buscar cliente..."
+          debounce="200">
+        </ion-searchbar>
+        <ion-list>
+          <ion-item
+            button
+            detail="false"
+            *ngFor="let client of filteredClients"
+            (click)="selectClient(client)">
+            <ion-label>
+              <h3>{{ client.name }}</h3>
+              <p>{{ client.email }}</p>
+              <p *ngIf="client.phone">{{ client.phone }}</p>
+            </ion-label>
+            <ion-icon slot="end" name="chevron-forward-outline" color="medium"></ion-icon>
+          </ion-item>
+        </ion-list>
+        <div class="ion-text-center ion-padding" *ngIf="filteredClients.length === 0">
+          <p>Sin clientes. Crea uno en la sección <strong>Clientes</strong>.</p>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+</ion-content>

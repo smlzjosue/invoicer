@@ -1,0 +1,75 @@
+ion-card {
+  margin: 12px 0;
+}
+
+/* ── Section labels inside cards ────────────────────────────────────────── */
+ion-card-title {
+  font-size: 0.88rem !important;
+  font-weight: 600 !important;
+  color: var(--ff-text-secondary) !important;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Trigger field: fecha de vencimiento */
+ion-item ion-text {
+  margin-top: 4px;
+  font-size: 0.95rem;
+  display: block;
+  color: var(--ff-text-primary);
+}
+
+ion-text.placeholder {
+  color: var(--ff-text-muted);
+}
+
+ion-note[color="danger"] {
+  padding: 4px 16px 8px;
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+/* ── Totals summary box ────────────────────────────────────────────────── */
+.totals-box {
+  padding: 16px 20px;
+  background: var(--ff-bg);
+  border: 1px solid var(--ff-border);
+  border-radius: var(--ff-radius-md);
+  margin-top: 12px;
+}
+
+.totals-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  font-size: 0.9rem;
+  color: var(--ff-text-secondary);
+
+  span:last-child {
+    font-weight: 600;
+    color: var(--ff-text-primary);
+  }
+
+  &.total {
+    border-top: 1px solid var(--ff-border);
+    margin-top: 10px;
+    padding-top: 12px;
+    font-size: 1.05rem;
+    color: var(--ff-text-primary);
+    font-weight: 700;
+
+    span:last-child {
+      font-size: 1.15rem;
+      color: var(--ion-color-primary);
+    }
+  }
+}
+
+/* ── Client selector trigger ────────────────────────────────────────────── */
+ion-button[fill="outline"] {
+  --border-color: var(--ff-border);
+  --color: var(--ff-text-secondary);
+  font-size: 0.88rem;
+}

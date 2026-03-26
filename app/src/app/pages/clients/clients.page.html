@@ -1,0 +1,153 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Clientes</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <!-- Buscador -->
+  <ion-searchbar
+    [(ngModel)]="searchTerm"
+    placeholder="Buscar por nombre, email o teléfono..."
+    debounce="200">
+  </ion-searchbar>
+
+  <!-- Estado vacío -->
+  <div class="empty-state" *ngIf="filteredClients.length === 0">
+    <ion-icon name="people-outline"></ion-icon>
+    <p>{{ searchTerm ? 'Sin resultados para "' + searchTerm + '"' : 'Aún no tienes clientes' }}</p>
+    <ion-button fill="outline" (click)="openCreateModal()" *ngIf="!searchTerm">
+      Agregar primer cliente
+    </ion-button>
+  </div>
+
+  <!-- Items con swipe -->
+  <ion-list *ngIf="filteredClients.length > 0">
+    <ion-item-sliding *ngFor="let client of filteredClients; trackBy: trackByClient">
+
+      <ion-item button detail="false" (click)="openEditModal(client)">
+        <ion-avatar slot="start" class="client-avatar">
+          <span>{{ client.name.charAt(0).toUpperCase() }}</span>
+        </ion-avatar>
+        <ion-label>
+          <h2>{{ client.name }}</h2>
+          <p>{{ client.email }}</p>
+          <ion-note *ngIf="client.phone">{{ client.phone }}</ion-note>
+        </ion-label>
+      </ion-item>
+
+      <ion-item-options side="end">
+        <ion-item-option color="primary" (click)="openEditModal(client)">
+          <ion-icon slot="icon-only" name="pencil-outline"></ion-icon>
+        </ion-item-option>
+        <ion-item-option color="danger" (click)="confirmDelete(client)">
+          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+
+    </ion-item-sliding>
+  </ion-list>
+
+  <!-- FAB -->
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button color="primary" (click)="openCreateModal()">
+      <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>
+
+<!-- Modal create / edit -->
+<ion-modal
+  [isOpen]="clientModalOpen"
+  (didDismiss)="closeModal()"
+  [initialBreakpoint]="1"
+  [breakpoints]="[0, 1]"
+  cssClass="client-form-modal">
+  <ng-template>
+
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>{{ editingClient ? 'Editar cliente' : 'Nuevo cliente' }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button fill="clear" (click)="closeModal()">
+            <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content [formGroup]="form" class="modal-content">
+      <ion-list lines="full" class="ion-padding-top">
+
+        <ion-item>
+          <ion-input
+            label="Nombre / Empresa"
+            label-placement="stacked"
+            formControlName="name"
+            placeholder="Ej. Acme Corp">
+          </ion-input>
+        </ion-item>
+        <ion-note color="danger" class="field-error"
+          *ngIf="form.get('name')!.invalid && form.get('name')!.touched">
+          El nombre es requerido
+        </ion-note>
+
+        <ion-item>
+          <ion-input
+            label="Email"
+            label-placement="stacked"
+            type="email"
+            formControlName="email"
+            placeholder="contacto@empresa.com">
+          </ion-input>
+        </ion-item>
+        <ion-note color="danger" class="field-error"
+          *ngIf="form.get('email')!.invalid && form.get('email')!.touched">
+          Ingresa un email válido
+        </ion-note>
+
+        <ion-item>
+          <ion-input
+            label="Teléfono"
+            label-placement="stacked"
+            type="tel"
+            formControlName="phone"
+            placeholder="+52 55 1234 5678">
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-textarea
+            label="Dirección"
+            label-placement="stacked"
+            formControlName="address"
+            [rows]="2"
+            auto-grow="true"
+            placeholder="Calle, ciudad, estado">
+          </ion-textarea>
+        </ion-item>
+
+      </ion-list>
+    </ion-content>
+
+    <ion-footer class="modal-footer">
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button fill="clear" color="medium" (click)="closeModal()">Cancelar</ion-button>
+        </ion-buttons>
+        <ion-buttons slot="end">
+          <ion-button fill="solid" color="primary" (click)="saveClient()">
+            <ion-icon slot="start" name="checkmark-outline"></ion-icon>
+            Guardar
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-footer>
+
+  </ng-template>
+</ion-modal>

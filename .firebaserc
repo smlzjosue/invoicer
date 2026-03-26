@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "invoicer-dev",
+    "dev":     "invoicer-dev",
+    "qa":      "invoicer-qa",
+    "prod":    "invoicer-6a7c2"
+  }
+}

@@ -1,0 +1,95 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Invoicer</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-segment [value]="selectedSegment" (ionChange)="onSegmentChange($event)">
+      <ion-segment-button value="all">
+        <ion-label>Todas</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="pending">
+        <ion-label>Pendiente</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="paid">
+        <ion-label>Pagada</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="draft">
+        <ion-label>Borrador</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="filteredInvoices$ | async as invoices">
+    <!-- Empty state -->
+    <div class="empty-state" *ngIf="invoices.length === 0">
+      <ion-icon name="document-text-outline" size="large"></ion-icon>
+      <p>No hay facturas aún</p>
+      <ion-button (click)="openEditor()">Crear primera factura</ion-button>
+    </div>
+
+    <!-- Desktop: tabla -->
+    <ion-grid class="ion-hide-lg-down" *ngIf="invoices.length > 0">
+      <ion-row class="table-header">
+        <ion-col size="2"><strong>Número</strong></ion-col>
+        <ion-col size="3"><strong>Cliente</strong></ion-col>
+        <ion-col size="2"><strong>Fecha</strong></ion-col>
+        <ion-col size="2"><strong>Total</strong></ion-col>
+        <ion-col size="2"><strong>Estado</strong></ion-col>
+        <ion-col size="1"></ion-col>
+      </ion-row>
+      <ion-row
+        class="table-row"
+        *ngFor="let inv of invoices; trackBy: trackByInvoice"
+        (click)="openEditor(inv.id)"
+      >
+        <ion-col size="2">{{ inv.invoiceNumber }}</ion-col>
+        <ion-col size="3">{{ inv.to.name }}</ion-col>
+        <ion-col size="2">{{ inv.issueDate }}</ion-col>
+        <ion-col size="2">${{ inv.total | number: '1.2-2' }}</ion-col>
+        <ion-col size="2">
+          <ion-badge [color]="getStatusColor(inv.status)">{{ getStatusLabel(inv.status) }}</ion-badge>
+        </ion-col>
+        <ion-col size="1">
+          <ion-button fill="clear" size="small" (click)="openPreview(inv.id!, $event)">
+            <ion-icon slot="icon-only" name="eye-outline"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <!-- Mobile: lista deslizable -->
+    <ion-list class="ion-hide-lg-up" *ngIf="invoices.length > 0">
+      <ion-item-sliding *ngFor="let inv of invoices; trackBy: trackByInvoice">
+        <ion-item (click)="openEditor(inv.id)">
+          <ion-label>
+            <h2>{{ inv.to.name }}</h2>
+            <p>{{ inv.invoiceNumber }} · {{ inv.issueDate }}</p>
+          </ion-label>
+          <ion-note slot="end">
+            <div class="amount">${{ inv.total | number: '1.2-2' }}</div>
+            <ion-badge [color]="getStatusColor(inv.status)">{{ getStatusLabel(inv.status) }}</ion-badge>
+          </ion-note>
+        </ion-item>
+        <ion-item-options side="end">
+          <ion-item-option color="primary" (click)="openPreview(inv.id!, $event)">
+            <ion-icon slot="icon-only" name="eye-outline"></ion-icon>
+          </ion-item-option>
+          <ion-item-option color="danger" (click)="confirmDelete(inv.id!, $event)">
+            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+  </ng-container>
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button (click)="openEditor()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

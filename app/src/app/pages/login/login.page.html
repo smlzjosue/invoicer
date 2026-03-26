@@ -1,0 +1,143 @@
+<ion-content [fullscreen]="true" class="login-content">
+
+  <!-- Background gradient -->
+  <div class="login-background"></div>
+
+  <!-- Main container -->
+  <div class="login-container">
+
+    <!-- Logo/Brand section -->
+    <div class="login-header text-center mb-5 mt-5">
+      <h1 class="font-32 font-bold mb-2">Invoicer</h1>
+      <p class="font-16">Gestiona tus facturas de manera simple</p>
+    </div>
+
+    <!-- Login form card -->
+    <div class="login-card">
+      <div class="card-header text-center mb-4">
+        <h2 class="font-24 font-bold mb-1">{{ isLoginMode ? 'Iniciar Sesión' : 'Crear Cuenta' }}</h2>
+        <p class="font-14">{{ isLoginMode ? 'Accede a tu cuenta' : 'Únete a nosotros' }}</p>
+      </div>
+
+      <!-- Form -->
+      <form class="login-form">
+
+        <!-- Name field (register only) -->
+        @if (!isLoginMode) {
+        <div class="form-group mb-3">
+          <ion-item lines="none" class="custom-input" [class.error]="nameError">
+            <ion-icon name="person-outline" slot="start" class="input-icon"></ion-icon>
+            <ion-input type="text" placeholder="Nombre completo" [(ngModel)]="name" name="name"
+              (ionBlur)="validateField('name')" [disabled]="isSubmitting">
+            </ion-input>
+          </ion-item>
+          @if (nameError) {
+          <div class="error-message">{{ nameError }}</div>
+          }
+        </div>
+        }
+
+        <!-- Email field -->
+        <div class="form-group mb-3">
+          <ion-item lines="none" class="custom-input" [class.error]="emailError">
+            <ion-icon name="mail-outline" slot="start" class="input-icon"></ion-icon>
+            <ion-input type="email" placeholder="Correo electrónico" [(ngModel)]="email" name="email"
+              (ionBlur)="validateField('email')" [disabled]="isSubmitting">
+            </ion-input>
+          </ion-item>
+          @if (emailError) {
+          <div class="error-message">{{ emailError }}</div>
+          }
+        </div>
+
+        <!-- Password field -->
+        <div class="form-group mb-4">
+          <ion-item lines="none" class="custom-input" [class.error]="passwordError">
+            <ion-icon name="lock-closed-outline" slot="start" class="input-icon"></ion-icon>
+            <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="Contraseña" [(ngModel)]="password"
+              name="password" (ionBlur)="validateField('password')" [disabled]="isSubmitting">
+            </ion-input>
+            <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" slot="end"
+              class="input-icon cursor-pointer" (click)="togglePassword()">
+            </ion-icon>
+          </ion-item>
+          @if (passwordError) {
+          <div class="error-message">{{ passwordError }}</div>
+          }
+        </div>
+
+        <!-- Confirm password (register only) -->
+        @if (!isLoginMode) {
+        <div class="form-group mb-4">
+          <ion-item lines="none" class="custom-input" [class.error]="confirmPasswordError">
+            <ion-icon name="lock-closed-outline" slot="start" class="input-icon"></ion-icon>
+            <ion-input [type]="showConfirmPassword ? 'text' : 'password'" placeholder="Confirmar contraseña"
+              [(ngModel)]="confirmPassword" name="confirmPassword" (ionBlur)="validateField('confirmPassword')"
+              [disabled]="isSubmitting">
+            </ion-input>
+            <ion-icon [name]="showConfirmPassword ? 'eye-off-outline' : 'eye-outline'" slot="end"
+              class="input-icon cursor-pointer" (click)="toggleConfirmPassword()">
+            </ion-icon>
+          </ion-item>
+          @if (confirmPasswordError) {
+          <div class="error-message">{{ confirmPasswordError }}</div>
+          }
+        </div>
+        }
+
+        <!-- Forgot password (login only) -->
+        @if (isLoginMode) {
+        <div class="text-center mb-4">
+          <a class="forgot-password font-14 cursor-pointer" (click)="forgotPassword()">
+            ¿Olvidaste tu contraseña?
+          </a>
+        </div>
+        }
+
+        <!-- Submit button -->
+        <ion-button expand="block" shape="round" size="large" color="primary" class="submit-button mb-3"
+          [disabled]="isSubmitDisabled" (click)="isLoginMode ? login() : register()">
+          @if (isSubmitting) {
+          <ion-spinner name="crescent"></ion-spinner>
+          } @else {
+          <span>{{ isLoginMode ? 'Iniciar Sesión' : 'Crear Cuenta' }}</span>
+          }
+        </ion-button>
+
+        <!-- Divider -->
+        <div class="divider-container mb-3">
+          <div class="divider-line"></div>
+          <span class="divider-text font-12">O</span>
+          <div class="divider-line"></div>
+        </div>
+
+        <!-- Social login buttons -->
+        <div class="social-buttons mb-4">
+          <ion-button expand="block" fill="outline" shape="round" color="dark" class="social-button mb-2"
+            [disabled]="isSubmitting" (click)="loginWithGoogle()">
+            <ion-icon name="logo-google" slot="start"></ion-icon>
+            Continuar con Google
+          </ion-button>
+
+          <ion-button expand="block" fill="outline" shape="round" color="dark" class="social-button-apple mb-2"
+            [disabled]="isSubmitting" (click)="loginWithApple()">
+            <ion-icon name="logo-apple" slot="start"></ion-icon>
+            Continuar con Apple
+          </ion-button>
+        </div>
+
+        <!-- Switch mode -->
+        <div class="switch-mode text-center">
+          <p class="font-14">
+            {{ isLoginMode ? '¿No tienes cuenta?' : '¿Ya tienes cuenta?' }}
+            <span class="switch-link font-bold cursor-pointer ml-1" (click)="toggleMode()">
+              {{ isLoginMode ? 'Registrarse' : 'Iniciar Sesión' }}
+            </span>
+          </p>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+</ion-content>

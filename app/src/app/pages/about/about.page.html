@@ -1,0 +1,89 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Acerca de</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid fixed>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="12" size-md="6">
+
+        <!-- Card del desarrollador -->
+        <ion-card class="dev-card">
+          <ion-card-header>
+            <div class="dev-avatar">
+              <ion-icon name="code-slash-outline"></ion-icon>
+            </div>
+            <ion-card-title>FacturaFácil</ion-card-title>
+            <ion-card-subtitle>
+              v{{ appVersion }}&nbsp;&nbsp;·&nbsp;&nbsp;{{ appEnv }}
+            </ion-card-subtitle>
+          </ion-card-header>
+          <ion-card-content>
+            <p class="developer-label">Desarrollado por</p>
+            <p class="developer-name">{{ developer }}</p>
+          </ion-card-content>
+        </ion-card>
+
+        <!-- Lista de contacto -->
+        <ion-list class="contact-list" lines="full">
+
+          <ion-item>
+            <a [href]="website" target="_blank" rel="noopener noreferrer" class="contact-link">
+              <ion-icon name="globe-outline" slot="start"></ion-icon>
+              <ion-label>
+                <p class="contact-title">Portal web</p>
+                <p class="contact-value">ingjesdlozcorp-4c58b.web.app</p>
+              </ion-label>
+              <ion-icon name="open-outline" slot="end" class="external-icon"></ion-icon>
+            </a>
+          </ion-item>
+
+          <ion-item>
+            <a [href]="phoneHref" class="contact-link">
+              <ion-icon name="call-outline" slot="start"></ion-icon>
+              <ion-label>
+                <p class="contact-title">Teléfono</p>
+                <p class="contact-value">{{ phone }}</p>
+              </ion-label>
+              <ion-icon name="open-outline" slot="end" class="external-icon"></ion-icon>
+            </a>
+          </ion-item>
+
+          <ion-item>
+            <a [href]="'mailto:' + email" target="_blank" rel="noopener noreferrer" class="contact-link">
+              <ion-icon name="mail-outline" slot="start"></ion-icon>
+              <ion-label>
+                <p class="contact-title">Email</p>
+                <p class="contact-value">{{ email }}</p>
+              </ion-label>
+              <ion-icon name="open-outline" slot="end" class="external-icon"></ion-icon>
+            </a>
+          </ion-item>
+
+          <ion-item>
+            <a [href]="linkedin" target="_blank" rel="noopener noreferrer" class="contact-link">
+              <ion-icon name="logo-linkedin" slot="start" class="linkedin-icon"></ion-icon>
+              <ion-label>
+                <p class="contact-title">LinkedIn</p>
+                <p class="contact-value">Samuel J. Lozada K.</p>
+              </ion-label>
+              <ion-icon name="open-outline" slot="end" class="external-icon"></ion-icon>
+            </a>
+          </ion-item>
+
+        </ion-list>
+
+        <!-- Copyright -->
+        <p class="copyright">
+          &copy; {{ currentYear }} {{ developer }}.<br>Todos los derechos reservados.
+        </p>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

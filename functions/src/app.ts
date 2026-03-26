@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import mongoose from 'mongoose';
 import { connectDb } from './db/connection';
 import { authMiddleware } from './middleware/auth';
 import { invoicesRouter } from './routes/invoices';
@@ -39,6 +40,8 @@ app.get('/health', (_req, res) => {
   res.json({
     status: 'ok',
     env: process.env['APP_ENV'] ?? 'unknown',
+    dbStatus: mongoose.connection.readyState, // 0=disconnected 1=connected 2=connecting
+    mongoUriSet: !!process.env['MONGO_URI'],
     timestamp: new Date().toISOString(),
   });
 });

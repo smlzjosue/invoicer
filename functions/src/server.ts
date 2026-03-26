@@ -7,9 +7,9 @@ dotenv.config({ path: path.resolve(__dirname, '../', envFile) });
 import { initializeApp } from 'firebase-admin/app';
 import { app } from './app';
 
-initializeApp();
+initializeApp({ projectId: process.env['FIREBASE_PROJECT_ID'] ?? 'invoicer-6a7c2' });
 
-const PORT = process.env['PORT'] ?? 5000;
+const PORT = process.env['PORT'] ?? 3000;
 app.listen(PORT, () => {
   console.log(`[server] API corriendo en http://localhost:${PORT}`);
   console.log(`[server] Env: ${process.env['APP_ENV'] ?? 'dev'}`);

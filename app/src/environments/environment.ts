@@ -6,9 +6,9 @@ export const environment = {
   production: false,
   envName: 'dev',
   appVersion: '1.0.0',
-  apiUrl: 'http://localhost:5000/invoices',
-  clientsUrl: 'http://localhost:5000/clients',
-  profileUrl: 'http://localhost:5000/profile',
+  apiUrl: 'http://localhost:3000/invoices',
+  clientsUrl: 'http://localhost:3000/clients',
+  profileUrl: 'http://localhost:3000/profile',
   firebase: {
     apiKey: 'AIzaSyAPUmEvZSFmA75S44GbYmUFRNa1J56z-l4',
     authDomain: 'invoicer-6a7c2.firebaseapp.com',

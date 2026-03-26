@@ -12,7 +12,8 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
     const decoded = await getAuth().verifyIdToken(token);
     req.user = { uid: decoded.uid, email: decoded.email ?? '' };
     next();
-  } catch {
+  } catch (err: any) {
+    console.error('[auth] verifyIdToken falló:', err.message);
     res.status(401).json({ error: 'No autorizado — token inválido' });
   }
 }

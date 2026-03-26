@@ -292,3 +292,27 @@ ion-header ion-toolbar:first-child {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
   }
 }
+
+/* ── Print: ocultar sidebar y mostrar solo el contenido ─────────────── */
+@media print {
+  ion-menu {
+    display: none !important;
+  }
+
+  ion-split-pane {
+    --side-width: 0 !important;
+    --side-min-width: 0 !important;
+    --side-max-width: 0 !important;
+  }
+
+  ion-header,
+  ion-footer,
+  ion-tab-bar,
+  ion-toolbar {
+    display: none !important;
+  }
+
+  ion-router-outlet {
+    margin-left: 0 !important;
+  }
+}

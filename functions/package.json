@@ -4,6 +4,7 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",
+    "dev": "npm run build && node lib/server.js",
     "serve:local": "npm run build && firebase emulators:start --only functions,firestore",
     "emulate": "firebase emulators:start --export-on-exit ./emulator-data --import ./emulator-data",
     "test": "jest --forceExit",

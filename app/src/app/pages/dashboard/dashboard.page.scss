@@ -3,9 +3,11 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  text-align: center;
   height: 60vh;
   gap: 12px;
   color: var(--ff-text-muted);
+  padding: 0 16px;
 
   ion-icon {
     font-size: 56px;

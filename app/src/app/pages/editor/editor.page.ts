@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LoadingController, ToastController } from '@ionic/angular';
+import { IonDatetime, LoadingController, ToastController } from '@ionic/angular';
 import { firstValueFrom } from 'rxjs';
 import { InvoiceService } from '../../services/invoice.service';
 import { ClientService } from '../../services/client.service';
@@ -19,8 +19,10 @@ export class EditorPage implements OnInit {
   invoiceId: string | null = null;
   isNew = true;
 
+  issueDateModalOpen = false;
+  issueDateInitial = '';
   dueDateModalOpen = false;
-  tempDueDate = '';
+  dueDateInitial = '';
 
   clientSelectorOpen = false;
   clientSearch = '';
@@ -30,6 +32,13 @@ export class EditorPage implements OnInit {
     return new Date().toISOString().split('T')[0];
   }
 
+  get issueDateDisplay(): string {
+    const val = this.form.get('issueDate')!.value;
+    if (!val) return 'Seleccionar fecha';
+    const [year, month, day] = val.split('-');
+    return `${day}/${month}/${year}`;
+  }
+
   get dueDateDisplay(): string {
     const val = this.form.get('dueDate')!.value;
     if (!val) return 'Seleccionar fecha';
@@ -37,19 +46,36 @@ export class EditorPage implements OnInit {
     return `${day}/${month}/${year}`;
   }
 
+  openIssueDateModal() {
+    this.issueDateInitial = this.form.get('issueDate')!.value || new Date().toISOString().split('T')[0];
+    this.issueDateModalOpen = true;
+  }
+
+  async confirmIssueDate(picker: IonDatetime) {
+    await picker.confirm();
+    const val = picker.value as string;
+    if (val) this.form.get('issueDate')!.setValue(val.substring(0, 10));
+    this.issueDateModalOpen = false;
+  }
+
+  setIssueDateToday() {
+    this.form.get('issueDate')!.setValue(new Date().toISOString().split('T')[0]);
+    this.issueDateModalOpen = false;
+  }
+
+  cancelIssueDate() {
+    this.issueDateModalOpen = false;
+  }
+
   openDueDateModal() {
-    this.tempDueDate = this.form.get('dueDate')!.value || this.minDueDate;
+    this.dueDateInitial = this.form.get('dueDate')!.value || this.minDueDate;
     this.dueDateModalOpen = true;
   }
 
-  onDatetimeChange(event: CustomEvent) {
-    const iso: string = event.detail.value;
-    if (iso) this.tempDueDate = iso;
-  }
-
-  confirmDueDate() {
-    const date = this.tempDueDate.substring(0, 10);
-    this.form.get('dueDate')!.setValue(date);
+  async confirmDueDate(picker: IonDatetime) {
+    await picker.confirm();
+    const val = picker.value as string;
+    if (val) this.form.get('dueDate')!.setValue(val.substring(0, 10));
     this.dueDateModalOpen = false;
   }
 

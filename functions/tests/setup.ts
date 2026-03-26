@@ -1,1 +1,1 @@
-// No emulator needed — tests use in-memory Firestore mock
+// Tests use mongodb-memory-server via db-handler.ts — no emulator needed

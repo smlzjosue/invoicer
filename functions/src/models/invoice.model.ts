@@ -30,8 +30,8 @@ export interface Invoice {
   taxRate: number;
   taxAmount: number;
   total: number;
-  createdAt?: FirebaseFirestore.Timestamp | Date;
-  updatedAt?: FirebaseFirestore.Timestamp | Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface CreateInvoiceDto {

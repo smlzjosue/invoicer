@@ -3,5 +3,5 @@ export interface UserProfile {
   email: string;
   phone?: string;
   address?: string;
-  updatedAt?: FirebaseFirestore.Timestamp | Date;
+  updatedAt?: Date;
 }

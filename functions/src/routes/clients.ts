@@ -1,21 +1,17 @@
 import { Router, Request, Response } from 'express';
-import { getFirestore, FieldValue } from 'firebase-admin/firestore';
+// [FIRESTORE COMENTADO] import { getFirestore, FieldValue } from 'firebase-admin/firestore';
+import { Client } from '../db/models/client.schema';
 import { validateClient } from '../middleware/validateClient';
-import { CreateClientDto } from '../models/client.model';
 
 export const clientsRouter = Router();
-const COLLECTION = 'clients';
 
 // GET /clients — listar solo los del usuario autenticado
 clientsRouter.get('/', async (req: Request, res: Response): Promise<void> => {
   try {
-    const db = getFirestore();
     const uid = req.user!.uid;
-    const snap = await db.collection(COLLECTION)
-      .where('userId', '==', uid)
-      .orderBy('createdAt', 'desc')
-      .get();
-    const clients = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    const clients = await Client.find({ userId: uid })
+      .sort({ createdAt: -1 })
+      .lean({ transform: (doc: any) => { doc.id = doc._id.toString(); delete doc._id; delete doc.__v; return doc; } });
     res.json(clients);
   } catch (err: any) {
     console.error('[GET /clients]', err);
@@ -26,19 +22,11 @@ clientsRouter.get('/', async (req: Request, res: Response): Promise<void> => {
 // GET /clients/:id — obtener uno (solo si pertenece al usuario)
 clientsRouter.get('/:id', async (req: Request, res: Response): Promise<void> => {
   try {
-    const db = getFirestore();
     const uid = req.user!.uid;
-    const docRef = db.collection(COLLECTION).doc(req.params['id']);
-    const snap = await docRef.get();
-    if (!snap.exists) {
-      res.status(404).json({ error: 'Cliente no encontrado' });
-      return;
-    }
-    if (snap.data()!['userId'] !== uid) {
-      res.status(403).json({ error: 'Acceso denegado' });
-      return;
-    }
-    res.json({ id: snap.id, ...snap.data() });
+    const doc = await Client.findById(req.params['id']);
+    if (!doc) { res.status(404).json({ error: 'Cliente no encontrado' }); return; }
+    if (doc.userId !== uid) { res.status(403).json({ error: 'Acceso denegado' }); return; }
+    res.json(doc.toJSON());
   } catch (err: any) {
     console.error('[GET /clients/:id]', err);
     res.status(500).json({ error: err.message });
@@ -48,17 +36,10 @@ clientsRouter.get('/:id', async (req: Request, res: Response): Promise<void> => 
 // POST /clients — crear (inyecta userId del token)
 clientsRouter.post('/', validateClient, async (req: Request, res: Response): Promise<void> => {
   try {
-    const db = getFirestore();
     const uid = req.user!.uid;
-    const payload: CreateClientDto = req.body;
-    const docRef = await db.collection(COLLECTION).add({
-      ...payload,
-      userId: uid,
-      createdAt: FieldValue.serverTimestamp(),
-      updatedAt: FieldValue.serverTimestamp(),
-    });
-    const created = await docRef.get();
-    res.status(201).json({ id: docRef.id, ...created.data() });
+    const { userId: _strip, ...payload } = req.body;
+    const doc = await new Client({ ...payload, userId: uid }).save();
+    res.status(201).json(doc.toJSON());
   } catch (err: any) {
     console.error('[POST /clients]', err);
     res.status(500).json({ error: err.message });
@@ -68,25 +49,17 @@ clientsRouter.post('/', validateClient, async (req: Request, res: Response): Pro
 // PUT /clients/:id — actualizar (solo si pertenece al usuario)
 clientsRouter.put('/:id', validateClient, async (req: Request, res: Response): Promise<void> => {
   try {
-    const db = getFirestore();
     const uid = req.user!.uid;
-    const docRef = db.collection(COLLECTION).doc(req.params['id']);
-    const snap = await docRef.get();
-    if (!snap.exists) {
-      res.status(404).json({ error: 'Cliente no encontrado' });
-      return;
-    }
-    if (snap.data()!['userId'] !== uid) {
-      res.status(403).json({ error: 'Acceso denegado' });
-      return;
-    }
-    const { userId: _strip, ...payload }: Partial<CreateClientDto> = req.body;
-    await docRef.update({
-      ...payload,
-      updatedAt: FieldValue.serverTimestamp(),
-    });
-    const updated = await docRef.get();
-    res.json({ id: docRef.id, ...updated.data() });
+    const existing = await Client.findById(req.params['id']);
+    if (!existing) { res.status(404).json({ error: 'Cliente no encontrado' }); return; }
+    if (existing.userId !== uid) { res.status(403).json({ error: 'Acceso denegado' }); return; }
+    const { userId: _strip, ...payload } = req.body;
+    const updated = await Client.findByIdAndUpdate(
+      req.params['id'],
+      { ...payload },
+      { returnDocument: 'after', runValidators: true }
+    );
+    res.json(updated!.toJSON());
   } catch (err: any) {
     console.error('[PUT /clients/:id]', err);
     res.status(500).json({ error: err.message });
@@ -96,19 +69,11 @@ clientsRouter.put('/:id', validateClient, async (req: Request, res: Response): P
 // DELETE /clients/:id — eliminar (solo si pertenece al usuario)
 clientsRouter.delete('/:id', async (req: Request, res: Response): Promise<void> => {
   try {
-    const db = getFirestore();
     const uid = req.user!.uid;
-    const docRef = db.collection(COLLECTION).doc(req.params['id']);
-    const snap = await docRef.get();
-    if (!snap.exists) {
-      res.status(404).json({ error: 'Cliente no encontrado' });
-      return;
-    }
-    if (snap.data()!['userId'] !== uid) {
-      res.status(403).json({ error: 'Acceso denegado' });
-      return;
-    }
-    await docRef.delete();
+    const existing = await Client.findById(req.params['id']);
+    if (!existing) { res.status(404).json({ error: 'Cliente no encontrado' }); return; }
+    if (existing.userId !== uid) { res.status(403).json({ error: 'Acceso denegado' }); return; }
+    await Client.findByIdAndDelete(req.params['id']);
     res.status(204).send();
   } catch (err: any) {
     console.error('[DELETE /clients/:id]', err);

@@ -1,67 +1,11 @@
 import request from 'supertest';
+import * as dbHandler from './db-handler';
 
 // ── Tokens de prueba ──────────────────────────────────────────────────────────
 const VALID_TOKEN = 'valid-token';
 const OTHER_TOKEN = 'other-token';
 const AUTH = `Bearer ${VALID_TOKEN}`;
 const OTHER_AUTH = `Bearer ${OTHER_TOKEN}`;
-
-// ── In-memory Firestore mock ──────────────────────────────────────────────────
-let store: Record<string, Record<string, any>> = {};
-
-const getDocsFiltered = (col: string, field?: string, value?: any) =>
-  Object.entries(store[col] ?? {})
-    .filter(([, data]) => field === undefined || data[field] === value)
-    .map(([id, data]) => ({ id, data: () => data, exists: true }));
-
-const mockDb = {
-  collection: (col: string) => ({
-    where: (field: string, _op: string, value: any) => ({
-      orderBy: () => ({
-        get: async () => ({ docs: getDocsFiltered(col, field, value) }),
-      }),
-      get: async () => ({ docs: getDocsFiltered(col, field, value) }),
-    }),
-    orderBy: () => ({
-      get: async () => ({ docs: getDocsFiltered(col) }),
-    }),
-    add: async (data: any) => {
-      const id = `mock-${Math.random().toString(36).slice(2)}`;
-      store[col] = store[col] ?? {};
-      store[col][id] = { ...data, createdAt: new Date(), updatedAt: new Date() };
-      return {
-        id,
-        get: async () => ({ id, data: () => store[col][id], exists: true }),
-      };
-    },
-    doc: (id: string) => ({
-      get: async () => ({
-        id,
-        exists: !!(store[col] ?? {})[id],
-        data: () => (store[col] ?? {})[id],
-      }),
-      set: async (data: any, opts?: { merge?: boolean }) => {
-        store[col] = store[col] ?? {};
-        store[col][id] = opts?.merge && store[col][id]
-          ? { ...store[col][id], ...data }
-          : { ...data };
-      },
-      update: async (data: any) => {
-        if (store[col]?.[id]) {
-          store[col][id] = { ...store[col][id], ...data, updatedAt: new Date() };
-        }
-      },
-      delete: async () => {
-        if (store[col]) delete store[col][id];
-      },
-    }),
-  }),
-};
-
-jest.mock('firebase-admin/firestore', () => ({
-  getFirestore: () => mockDb,
-  FieldValue: { serverTimestamp: () => new Date() },
-}));
 
 jest.mock('firebase-admin/app', () => ({
   initializeApp: jest.fn(),
@@ -90,7 +34,9 @@ const validPayload = {
   address: 'Av. Insurgentes 123, CDMX',
 };
 
-beforeEach(() => { store = {}; });
+beforeAll(() => dbHandler.connect());
+afterAll(() => dbHandler.closeDatabase());
+beforeEach(() => dbHandler.clearDatabase());
 
 // ── Auth ───────────────────────────────────────────────────────────────────────
 
@@ -170,7 +116,7 @@ describe('GET /clients/:id', () => {
   });
 
   it('retorna 404 si no existe', async () => {
-    const res = await request(app).get(`${BASE}/id-inexistente`).set('Authorization', AUTH);
+    const res = await request(app).get(`${BASE}/000000000000000000000000`).set('Authorization', AUTH);
     expect(res.status).toBe(404);
     expect(res.body.error).toBe('Cliente no encontrado');
   });
@@ -195,7 +141,7 @@ describe('PUT /clients/:id', () => {
   });
 
   it('retorna 404 si el ID no existe', async () => {
-    const res = await request(app).put(`${BASE}/id-inexistente`).set('Authorization', AUTH).send(validPayload);
+    const res = await request(app).put(`${BASE}/000000000000000000000000`).set('Authorization', AUTH).send(validPayload);
     expect(res.status).toBe(404);
   });
 
@@ -220,7 +166,7 @@ describe('DELETE /clients/:id', () => {
   });
 
   it('retorna 404 si el ID no existe', async () => {
-    const res = await request(app).delete(`${BASE}/id-inexistente`).set('Authorization', AUTH);
+    const res = await request(app).delete(`${BASE}/000000000000000000000000`).set('Authorization', AUTH);
     expect(res.status).toBe(404);
   });
 

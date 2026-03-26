@@ -5,8 +5,8 @@ export interface Client {
   email: string;
   phone: string;
   address: string;
-  createdAt?: FirebaseFirestore.Timestamp | Date;
-  updatedAt?: FirebaseFirestore.Timestamp | Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface CreateClientDto {

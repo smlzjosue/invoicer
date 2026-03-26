@@ -1,11 +1,7 @@
 import request from 'supertest';
+import * as dbHandler from './db-handler';
 
-// ── Firestore mock mínimo ────────────────────────────────────────────────────
-jest.mock('firebase-admin/firestore', () => ({
-  getFirestore: () => ({ collection: () => ({}) }),
-  FieldValue: { serverTimestamp: () => new Date() },
-}));
-
+// ── Firestore mock mínimo (ya no usado, pero firebase-admin/app sigue inicializándose) ──
 jest.mock('firebase-admin/app', () => ({
   initializeApp: jest.fn(),
   getApps: () => [{}],
@@ -21,6 +17,9 @@ jest.mock('firebase-admin/auth', () => ({
 }));
 
 import { app } from '../src/app';
+
+beforeAll(() => dbHandler.connect());
+afterAll(() => dbHandler.closeDatabase());
 
 describe('Auth Middleware', () => {
   it('retorna 401 cuando no hay header Authorization', async () => {

@@ -1,41 +1,8 @@
 import request from 'supertest';
+import * as dbHandler from './db-handler';
 
 const VALID_TOKEN = 'valid-token';
 const AUTH = `Bearer ${VALID_TOKEN}`;
-
-// ── In-memory Firestore mock ──────────────────────────────────────────────────
-let store: Record<string, Record<string, any>> = {};
-
-const mockDb = {
-  collection: (col: string) => ({
-    where: (_f: string, _op: string, _v: any) => ({
-      orderBy: () => ({ get: async () => ({ docs: [] }) }),
-      get: async () => ({ docs: [] }),
-    }),
-    orderBy: () => ({ get: async () => ({ docs: [] }) }),
-    doc: (id: string) => ({
-      get: async () => ({
-        id,
-        exists: !!(store[col] ?? {})[id],
-        data: () => (store[col] ?? {})[id],
-      }),
-      set: async (data: any, opts?: { merge?: boolean }) => {
-        store[col] = store[col] ?? {};
-        store[col][id] = opts?.merge && store[col][id]
-          ? { ...store[col][id], ...data }
-          : { ...data };
-      },
-      update: async () => {},
-      delete: async () => {},
-    }),
-    add: async () => ({ id: 'mock-id', get: async () => ({ id: 'mock-id', data: () => ({}), exists: true }) }),
-  }),
-};
-
-jest.mock('firebase-admin/firestore', () => ({
-  getFirestore: () => mockDb,
-  FieldValue: { serverTimestamp: () => new Date() },
-}));
 
 jest.mock('firebase-admin/app', () => ({
   initializeApp: jest.fn(),
@@ -61,7 +28,9 @@ const validProfile = {
   address: 'Calle Falsa 123',
 };
 
-beforeEach(() => { store = {}; });
+beforeAll(() => dbHandler.connect());
+afterAll(() => dbHandler.closeDatabase());
+beforeEach(() => dbHandler.clearDatabase());
 
 describe('GET /profile', () => {
   it('retorna 404 cuando el perfil no existe aún', async () => {

@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import { connectDb } from './db/connection';
 import { authMiddleware } from './middleware/auth';
 import { invoicesRouter } from './routes/invoices';
 import { clientsRouter } from './routes/clients';
@@ -26,6 +27,12 @@ app.use(
 );
 
 app.use(express.json());
+
+// Conectar a MongoDB (cached — no-op si ya está conectado)
+app.use(async (_req, res, next) => {
+  try { await connectDb(); next(); }
+  catch (err: any) { res.status(500).json({ error: 'Error de conexión a la base de datos' }); }
+});
 
 // Health check — público, sin auth
 app.get('/health', (_req, res) => {
